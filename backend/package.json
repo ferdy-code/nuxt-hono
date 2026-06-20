@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "db:generate": "bunx @better-auth/cli generate --output src/db/schema.ts",
+    "db:migrate": "bunx drizzle-kit migrate",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "hono": "latest",
+    "better-auth": "latest",
+    "drizzle-orm": "latest",
+    "postgres": "latest"
+  },
+  "devDependencies": {
+    "drizzle-kit": "latest",
+    "@types/bun": "latest",
+    "typescript": "latest",
+    "eslint": "latest",
+    "@antfu/eslint-config": "latest"
+  }
+}
