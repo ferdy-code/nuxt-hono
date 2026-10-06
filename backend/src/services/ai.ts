@@ -1,7 +1,23 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import OpenAI from 'openai'
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY ?? '')
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
+const client = new OpenAI({
+  baseURL: process.env.AI_BASE_URL,
+  apiKey: process.env.AI_API_KEY ?? '',
+})
+const model = process.env.AI_MODEL ?? ''
+
+async function* streamCompletion(prompt: string): AsyncIterable<string> {
+  const stream = await client.chat.completions.create({
+    model,
+    messages: [{ role: 'user', content: prompt }],
+    stream: true,
+  })
+  for await (const chunk of stream) {
+    const text = chunk.choices[0]?.delta?.content
+    if (text)
+      yield text
+  }
+}
 
 interface IdeasParams {
   topic: string
@@ -37,10 +53,7 @@ Instruksi:
 - Jangan tambahkan markdown code block, langsung JSON saja
 Format: [{"title":"...","description":"...","tags":["...","..."]}]`
 
-  const result = await model.generateContentStream(prompt)
-  for await (const chunk of result.stream) {
-    yield chunk.text()
-  }
+  yield* streamCompletion(prompt)
 }
 
 export async function* generateOutlineStream(params: OutlineParams): AsyncIterable<string> {
@@ -62,10 +75,7 @@ Instruksi:
 - Tambahkan estimasi jumlah kata per section
 - Mulai dengan H1 untuk judul artikel`
 
-  const result = await model.generateContentStream(prompt)
-  for await (const chunk of result.stream) {
-    yield chunk.text()
-  }
+  yield* streamCompletion(prompt)
 }
 
 export async function* repurposeStream(params: RepurposeParams): AsyncIterable<string> {
@@ -91,10 +101,7 @@ ${articleContent}`
 
     yield `---PLATFORM: ${platform}---\n`
 
-    const result = await model.generateContentStream(prompt)
-    for await (const chunk of result.stream) {
-      yield chunk.text()
-    }
+    yield* streamCompletion(prompt)
 
     yield `\n---END: ${platform}---\n`
   }

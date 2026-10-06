@@ -10,11 +10,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
     "@notionhq/client": "^5.22.0",
     "better-auth": "latest",
     "drizzle-orm": "latest",
     "hono": "latest",
+    "openai": "^7.28.0",
     "postgres": "latest"
   },
   "devDependencies": {
