@@ -1,11 +1,21 @@
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['shadcn-nuxt'],
+  shadcn: {
+    prefix: '',
+    componentDir: './components/ui',
+  },
   components: [
-    { path: '~/components/ui', prefix: '' },
+    { path: '~/components/app', prefix: '' },
+    { path: '~/components/ai', prefix: 'Ai' },
+    { path: '~/components/content', prefix: 'Content' },
+    { path: '~/components/calendar', prefix: 'Calendar' },
     '~/components',
   ],
-  tailwindcss: {
-    cssPath: '~/assets/css/main.css',
+  css: ['~/assets/css/main.css'],
+  vite: {
+    plugins: [tailwindcss()],
   },
   runtimeConfig: {
     public: {
